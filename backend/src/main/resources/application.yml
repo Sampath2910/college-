@@ -1,0 +1,67 @@
+spring:
+  application.name: projectshelf
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/projectshelf?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate.ddl-auto: validate
+    open-in-view: true
+    properties.hibernate.jdbc.time_zone: UTC
+    properties.hibernate.default_batch_fetch_size: 50   # one query per association for a page of cards, not one per card
+  flyway.enabled: true
+  jackson.default-property-inclusion: always
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework   # backend sits behind the Next.js / reverse proxy
+  error.include-message: always
+  compression:
+    enabled: true
+    mime-types: application/json,text/plain
+    min-response-size: 1024
+  tomcat.max-http-form-post-size: 256KB
+  servlet.session:
+    timeout: 7d
+    cookie:
+      http-only: true
+      same-site: lax
+      secure: ${COOKIE_SECURE:false}
+
+management.endpoints.web.exposure.include: health
+
+app:
+  public-url: ${APP_PUBLIC_URL:http://localhost:3000}
+  cors-origins: ${APP_CORS_ORIGINS:http://localhost:3000}
+  admin:
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
+  github:
+    token: ${GITHUB_TOKEN:}
+    api-url: ${GITHUB_API_URL:https://api.github.com}
+  kaggle:
+    api-token: ${KAGGLE_API_TOKEN:}
+    username: ${KAGGLE_USERNAME:}
+    key: ${KAGGLE_KEY:}
+    api-url: ${KAGGLE_API_URL:https://api.kaggle.com}
+  ai:
+    service-url: ${AI_SERVICE_URL:http://localhost:8000}
+    service-token: ${AI_SERVICE_TOKEN:}
+  email:
+    resend-api-key: ${RESEND_API_KEY:}
+    api-url: ${RESEND_API_URL:https://api.resend.com}
+    from: ${EMAIL_FROM:}
+    from-name: ${EMAIL_FROM_NAME:ProjectShelf}
+    reply-to: ${EMAIL_REPLY_TO:}
+    admin-notify: ${ADMIN_NOTIFY_EMAIL:}
+  whatsapp:
+    access-token: ${WHATSAPP_ACCESS_TOKEN:}
+    phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}
+    api-url: ${WHATSAPP_API_URL:https://graph.facebook.com/v23.0}
+    template-name: ${WHATSAPP_TEMPLATE_NAME:}
+    template-lang: ${WHATSAPP_TEMPLATE_LANG:en}
+  payments.mock-enabled: ${PAYMENTS_MOCK_ENABLED:false}   # demo checkout; never enable in production
+  scheduler.enabled: ${SCHEDULER_ENABLED:true}
+  rate-limit.enabled: ${RATE_LIMIT_ENABLED:true}
+
+logging.level.org.hibernate.orm.deprecation: error

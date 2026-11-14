@@ -1,0 +1,181 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Design tokens. The public site reads as a printed catalogue: warm paper, ink, one deep green, serif headings and
+ * monospace reference labels. The admin area re-maps the same tokens to a cooler, denser working palette (.admin-shell).
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+  --font-heading: var(--font-fraunces);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-ochre: var(--ochre);
+  --color-ochre-soft: var(--ochre-soft);
+  --color-ink: var(--ink);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+:root {
+  --background: #f6f3ec;
+  --foreground: #1b1f1c;
+  --card: #fffdf7;
+  --card-foreground: #1b1f1c;
+  --popover: #fffdf7;
+  --popover-foreground: #1b1f1c;
+  --primary: #1f4d3b;
+  --primary-foreground: #f6f3ec;
+  --secondary: #eae4d6;
+  --secondary-foreground: #1b1f1c;
+  --muted: #eee9dd;
+  --muted-foreground: #565c57;
+  --accent: #eae4d6;
+  --accent-foreground: #1b1f1c;
+  --destructive: #a3341f;
+  --border: #d9d2c1;
+  --input: #c9c1ae;
+  --ring: #1f4d3b;
+  --ochre: #8f560d;        /* text-safe on paper */
+  --ochre-soft: #f1dfbd;   /* highlight wash */
+  --ink: #14201b;
+  --chart-1: #1f4d3b;
+  --chart-2: #b8741a;
+  --chart-3: #5c8a76;
+  --chart-4: #7a6a4f;
+  --chart-5: #a3341f;
+  --radius: 0.375rem;
+}
+
+.admin-shell {
+  --background: #f5f6f5;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --secondary: #eceeec;
+  --muted: #eef0ee;
+  --muted-foreground: #58605b;
+  --accent: #eceeec;
+  --border: #dde1dd;
+  --input: #c8cec9;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    @apply font-display tracking-tight;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+@layer components {
+  /* page gutter + max width used by every public section */
+  .page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  /* small monospace reference label, e.g. "SOURCE · GITHUB" */
+  .ref {
+    @apply font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground;
+  }
+  /* native form controls, styled once */
+  .field {
+    @apply h-10 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25 disabled:opacity-60 aria-invalid:border-destructive;
+  }
+  textarea.field {
+    @apply h-auto min-h-28 py-2.5 leading-relaxed;
+  }
+  select.field {
+    @apply appearance-none bg-no-repeat pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23565c57' stroke-width='1.6'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.7rem center;
+  }
+  .btn, .btn-primary, .btn-outline, .btn-ghost, .btn-danger {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium whitespace-nowrap transition-colors select-none disabled:pointer-events-none disabled:opacity-55 [&_svg]:size-4 [&_svg]:shrink-0;
+  }
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-[#173a2c];
+  }
+  .btn-outline {
+    @apply border border-input bg-card text-foreground hover:border-foreground/40 hover:bg-secondary/60;
+  }
+  .btn-ghost {
+    @apply text-foreground hover:bg-secondary;
+  }
+  .btn-danger {
+    @apply border border-destructive/40 bg-card text-destructive hover:bg-destructive/10;
+  }
+  .btn-sm {
+    @apply h-8 px-3 text-[0.8125rem];
+  }
+  .link {
+    @apply underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground;
+  }
+  .panel {
+    @apply rounded-lg border bg-card;
+  }
+  /* long-form text on legal / about pages */
+  .prose-page h2 {
+    @apply mt-10 mb-3 text-2xl;
+  }
+  .prose-page h3 {
+    @apply mt-6 mb-2 font-sans text-base font-semibold tracking-normal;
+  }
+  .prose-page p, .prose-page li {
+    @apply leading-relaxed text-foreground/85;
+  }
+  .prose-page p + p {
+    @apply mt-4;
+  }
+  .prose-page ul {
+    @apply my-4 list-disc space-y-2 pl-5;
+  }
+  .prose-page a {
+    @apply underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground;
+  }
+}

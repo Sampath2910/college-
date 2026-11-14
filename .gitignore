@@ -1,0 +1,17 @@
+.tools/
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+target/
+__pycache__/
+.venv/
+*.log
+test-results/
+playwright-report/
+.pytest_cache/
+storage/
+backend/storage/
+.vscode/
+.idea/

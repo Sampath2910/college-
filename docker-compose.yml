@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: projectshelf-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: projectshelf
+      MYSQL_USER: ${DB_USERNAME:-projectshelf}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-projectshelf_secret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: projectshelf-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/projectshelf?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=UTC
+      DB_USERNAME: ${DB_USERNAME:-projectshelf}
+      DB_PASSWORD: ${DB_PASSWORD:-projectshelf_secret}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@projectshelf.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ChangeMeToAStrongPassword123!}
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://localhost:3000}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      KAGGLE_USERNAME: ${KAGGLE_USERNAME:-}
+      KAGGLE_KEY: ${KAGGLE_KEY:-}
+      KAGGLE_API_TOKEN: ${KAGGLE_API_TOKEN:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      WHATSAPP_PHONE_NUMBER_ID: ${WHATSAPP_PHONE_NUMBER_ID:-}
+      WHATSAPP_ACCESS_TOKEN: ${WHATSAPP_ACCESS_TOKEN:-}
+    ports:
+      - "8080:8080"
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: projectshelf-ai-service
+    restart: unless-stopped
+    environment:
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN}
+      AI_PROVIDER: ${AI_PROVIDER:-anthropic}
+      AI_MODEL: ${AI_MODEL:-claude-haiku-5-5}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: projectshelf-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      BACKEND_URL: http://backend:8080
+      NEXT_PUBLIC_SITE_NAME: ${NEXT_PUBLIC_SITE_NAME:-ProjectShelf}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-}
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_data:
+
