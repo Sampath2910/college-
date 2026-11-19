@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/lib/auth";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -78,9 +79,13 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <div className="ml-auto hidden items-center gap-2 lg:flex">{account}</div>
+        <div className="ml-auto hidden items-center gap-2 lg:flex">
+          <ThemeToggle />
+          {account}
+        </div>
+        <ThemeToggle className="ml-auto lg:hidden" />
         <button
-          className="btn-ghost ml-auto size-10 px-0 lg:hidden"
+          className="btn-ghost size-10 px-0 lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}

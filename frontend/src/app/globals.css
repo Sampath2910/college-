@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Dark mode is toggled by a `.dark` class on <html> (next-themes), not the OS
+ * setting, so the existing `dark:` utilities across the app respond to the toggle. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
  * Design tokens. The public site reads as a printed catalogue: warm paper, ink, one deep green, serif headings and
  * monospace reference labels. The admin area re-maps the same tokens to a cooler, denser working palette (.admin-shell).
@@ -84,6 +88,50 @@
   --accent: #eceeec;
   --border: #dde1dd;
   --input: #c8cec9;
+}
+
+/* Dark theme — same token contract as the light "paper" palette, re-mapped to
+ * ink-on-charcoal with a lighter green so text stays legible on dark surfaces. */
+.dark {
+  --background: #14181a;
+  --foreground: #e7e5de;
+  --card: #1b2123;
+  --card-foreground: #e7e5de;
+  --popover: #1b2123;
+  --popover-foreground: #e7e5de;
+  --primary: #4f9e80;
+  --primary-foreground: #0b1210;
+  --secondary: #262d2f;
+  --secondary-foreground: #e7e5de;
+  --muted: #222a2b;
+  --muted-foreground: #a2aaa4;
+  --accent: #262d2f;
+  --accent-foreground: #e7e5de;
+  --destructive: #e4674e;
+  --border: #2c3335;
+  --input: #3a4244;
+  --ring: #4f9e80;
+  --ochre: #e0a95b;
+  --ochre-soft: #38301d;
+  --ink: #e7e5de;
+  --chart-1: #4f9e80;
+  --chart-2: #d9922f;
+  --chart-3: #6fae95;
+  --chart-4: #b6a37e;
+  --chart-5: #e4674e;
+}
+
+/* Admin console in dark mode (slightly cooler/denser, mirroring its light remap). */
+.dark .admin-shell {
+  --background: #0f1314;
+  --card: #171d1e;
+  --popover: #171d1e;
+  --secondary: #222829;
+  --muted: #1e2526;
+  --muted-foreground: #99a09b;
+  --accent: #222829;
+  --border: #2a3032;
+  --input: #3a4244;
 }
 
 @layer base {
