@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { HeroArt } from "@/components/hero-art";
 import { ProjectGrid } from "@/components/project-card";
 import { SearchBox } from "@/components/search-box";
-import { fmtDate } from "@/lib/format";
 import { publicGet } from "@/lib/server-api";
 import { site } from "@/lib/site";
-import { PROJECT_TYPES, type Home, type ProjectCard } from "@/lib/types";
+import { type Home } from "@/lib/types";
 
 export const revalidate = 60;
 
@@ -30,41 +30,6 @@ const FAQ = [
   ["What does it cost?", "Browsing is free. Paid help is quoted individually after we understand what you need, and nothing is charged until you have agreed to the quotation."],
   ["What if a project has no licence?", "Then the author has not granted reuse rights, and the listing says the licence is not stated. You can still read it at the source, but ask the author before reusing the code."],
 ];
-
-function Specimen({ card }: { card: ProjectCard }) {
-  const rows: [string, string][] = [
-    ["Source", card.platform],
-    ["Type", PROJECT_TYPES[card.projectType] ?? card.projectType],
-    ["Category", card.category ?? "Not categorised"],
-    ["Licence", card.licence ?? "Not stated by the author"],
-    ["Updated", fmtDate(card.sourceUpdatedAt)],
-  ];
-  return (
-    <figure className="relative mx-auto w-full max-w-md lg:mr-0">
-      {/* two offset sheets suggest a stack of index cards */}
-      <div aria-hidden className="absolute inset-0 translate-x-3 translate-y-3 rounded-lg border bg-secondary/70" />
-      <div aria-hidden className="absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-lg border bg-card" />
-      <div className="relative rounded-lg border border-foreground/25 bg-card p-6">
-        <figcaption className="ref flex items-center justify-between">
-          <span>Catalogue entry</span>
-          <span className="text-ochre">Recently added</span>
-        </figcaption>
-        <p className="mt-4 font-display text-2xl leading-tight [overflow-wrap:anywhere]">{card.title}</p>
-        <dl className="mt-5 divide-y divide-border/70 border-y border-border/70 text-sm">
-          {rows.map(([k, v]) => (
-            <div key={k} className="flex items-baseline justify-between gap-4 py-2">
-              <dt className="ref">{k}</dt>
-              <dd className="text-right text-foreground/85 [overflow-wrap:anywhere]">{v}</dd>
-            </div>
-          ))}
-        </dl>
-        <Link href={`/projects/${card.slug}`} className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline hover:underline-offset-4">
-          Open this entry <ArrowRight className="size-4" aria-hidden />
-        </Link>
-      </div>
-    </figure>
-  );
-}
 
 function SectionHead({ label, title, href, link }: { label: string; title: string; href?: string; link?: string }) {
   return (
@@ -116,7 +81,7 @@ export default async function HomePage() {
               </p>
             )}
           </div>
-          {recent[0] && <Specimen card={recent[0]} />}
+          <HeroArt />
         </div>
       </section>
 

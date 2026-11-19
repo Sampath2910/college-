@@ -22,6 +22,7 @@ import {
   Sliders,
   Users,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/lib/auth";
 
 const ADMIN_NAV = [
@@ -137,10 +138,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Shield className="size-4 text-primary" />
             <span>Signed in as administrator</span>
           </div>
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-3 text-xs">
             <span className="inline-flex items-center gap-1.5 font-mono text-[0.6875rem] text-primary">
               <span>Internal · not indexed</span>
             </span>
+            <ThemeToggle />
           </div>
         </header>
 
