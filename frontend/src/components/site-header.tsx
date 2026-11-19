@@ -44,7 +44,7 @@ export function SiteHeader() {
     <span className="h-9 w-24" aria-hidden />
   ) : isStudent ? (
     <>
-      <Link href="/dashboard" className="btn-ghost btn-sm">My dashboard</Link>
+      <Link href="/student" className="btn-ghost btn-sm">My dashboard</Link>
       <button onClick={signOut} className="btn-outline btn-sm">Sign out</button>
     </>
   ) : me?.authenticated ? (
