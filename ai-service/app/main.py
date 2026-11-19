@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Internal AI service. Called only by the backend (shared-secret header); never exposed to the public website.
 
 It makes exactly one model call per request and returns structured JSON plus token usage.
