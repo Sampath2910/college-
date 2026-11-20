@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { AcademicPackages } from "@/components/academic-packages";
 import { BookmarkButton } from "@/components/bookmark-button";
+import { JsonLd } from "@/components/json-ld";
 import { ProjectGrid } from "@/components/project-card";
 import { ProjectEnquiryDrawer } from "@/components/project-enquiry-drawer";
 import { fmtDate, fmtNumber } from "@/lib/format";
@@ -86,7 +87,7 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   return (
     <div className="page py-8 sm:py-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <JsonLd json={JSON.stringify(jsonLd).replace(/</g, "\\u003c")} />
 
       <nav aria-label="Breadcrumb" className="mb-6 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
         <Link href="/projects" className="shrink-0 hover:text-foreground">Projects</Link>
