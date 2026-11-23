@@ -62,12 +62,11 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   const facts: [string, React.ReactNode][] = [
     ["Author", project.authorUrl ? <a href={project.authorUrl} target="_blank" rel="noopener noreferrer nofollow" className="link">{project.authorName ?? "View profile"}</a> : (project.authorName ?? "Not stated")],
-    ["Source", card.platform],
     ["Licence", project.licenceUrl ? <a href={project.licenceUrl} target="_blank" rel="noopener noreferrer" className="link">{project.licenceName ?? card.licence}</a> : (project.licenceName ?? card.licence ?? "Not stated by the author")],
     ["Type", PROJECT_TYPES[card.projectType] ?? card.projectType],
     ...(card.difficulty ? ([["Difficulty", `${DIFFICULTIES[card.difficulty] ?? card.difficulty} (our estimate)`]] as [string, React.ReactNode][]) : []),
     ...(card.primaryLanguage ? ([["Main language", card.primaryLanguage]] as [string, React.ReactNode][]) : []),
-    ...(card.stars != null ? ([[github ? "GitHub stars" : "Kaggle votes", fmtNumber(card.stars)]] as [string, React.ReactNode][]) : []),
+    ...(card.stars != null ? ([["Stars", fmtNumber(card.stars)]] as [string, React.ReactNode][]) : []),
     ...(github && project.forks != null ? ([["Forks", fmtNumber(project.forks)]] as [string, React.ReactNode][]) : []),
     ...(card.sourceUpdatedAt ? ([["Last source update", fmtDate(card.sourceUpdatedAt)]] as [string, React.ReactNode][]) : []),
     ...(project.lastVerifiedAt ? ([["Source link checked", fmtDate(project.lastVerifiedAt)]] as [string, React.ReactNode][]) : []),
@@ -106,8 +105,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         <div className="min-w-0 space-y-9">
           <header>
             <p className="ref flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span>{card.platform}</span>
-              <span aria-hidden className="text-border">/</span>
+              {card.category && <><span>{card.category}</span><span aria-hidden className="text-border">/</span></>}
               <span>{PROJECT_TYPES[card.projectType] ?? card.projectType}</span>
               {card.featured && <span className="rounded-sm bg-ochre-soft px-2 py-0.5 text-ochre">Featured</span>}
             </p>
@@ -117,7 +115,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             )}
             {project.authorName && (
               <p className="mt-4 text-sm text-muted-foreground">
-                By <span className="text-foreground">{project.authorName}</span> on {card.platform}
+                By <span className="text-foreground">{project.authorName}</span>
               </p>
             )}
             {card.technologies.length > 0 && (
@@ -176,12 +174,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         {/* Facts and actions */}
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-lg border border-foreground/25 bg-card p-5">
-            {project.sourceUrl && (
-              <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="btn-primary w-full">
-                View original on {card.platform} <ArrowUpRight aria-hidden />
-              </a>
-            )}
-            <div className="mt-2 grid gap-2">
+            <div className="grid gap-2">
               {project.demoUrl && (
                 <a href={project.demoUrl} target="_blank" rel="noopener noreferrer nofollow" className="btn-outline w-full">
                   Project website <ArrowUpRight aria-hidden />

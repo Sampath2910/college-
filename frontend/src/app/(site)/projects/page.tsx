@@ -91,7 +91,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
     technology && { label: `Tech: ${technology}`, key: "technology" },
     language && { label: `Language: ${language}`, key: "language" },
     difficulty && { label: `Difficulty: ${difficulty}`, key: "difficulty" },
-    platform && { label: `Platform: ${platform}`, key: "platform" },
+    platform && { label: `Source: ${platform === "GITHUB" ? "Code" : platform === "KAGGLE" ? "Datasets" : platform}`, key: "platform" },
     type && { label: `Type: ${PROJECT_TYPES[type] ?? type}`, key: "type" },
   ].filter(Boolean) as { label: string; key: string }[];
 
@@ -233,7 +233,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
 
           {/* Platform */}
           <div className="rounded-lg border border-border/80 bg-card p-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Source Platform</h2>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Source</h2>
             <div className="mt-3 flex gap-2 text-xs">
               <Link
                 href={filterUrl({ platform: null })}
@@ -245,13 +245,13 @@ export default async function ProjectsPage({ searchParams }: Props) {
                 href={filterUrl({ platform: "GITHUB" })}
                 className={`flex-1 rounded-sm border py-1.5 text-center ${platform === "GITHUB" ? "border-primary bg-primary text-primary-foreground" : "border-border/80 bg-card hover:bg-secondary/60"}`}
               >
-                GitHub
+                Code
               </Link>
               <Link
                 href={filterUrl({ platform: "KAGGLE" })}
                 className={`flex-1 rounded-sm border py-1.5 text-center ${platform === "KAGGLE" ? "border-primary bg-primary text-primary-foreground" : "border-border/80 bg-card hover:bg-secondary/60"}`}
               >
-                Kaggle
+                Datasets
               </Link>
             </div>
           </div>
