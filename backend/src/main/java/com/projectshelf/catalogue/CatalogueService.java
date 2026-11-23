@@ -129,8 +129,9 @@ public class CatalogueService {
         return projects.findBySlug(slug).filter(p -> p.getStatus() == com.projectshelf.common.Types.ProjectStatus.PUBLISHED).map(p -> {
             List<PublicAsset> shots = assets.findByProjectIdOrderBySortOrderAsc(p.getId()).stream()
                     .filter(ProjectAsset::isPermitted).map(a -> new PublicAsset(a.getUrl(), a.getAttribution())).toList();
+            // Source repo and author-profile links are admin-only (see AdminProjectController); public keeps author name + licence.
             return new PublicDetail(card(p), p.getOverview(), p.getProblemStatement(), p.getObjectives(), p.getFeatures(), p.getModules(),
-                    p.getAuthorName(), p.getAuthorUrl(), p.getSourceUrl(),
+                    p.getAuthorName(), null, null,
                     p.getLicence() == null ? null : p.getLicence().getName(), p.getLicence() == null ? null : p.getLicence().getUrl(),
                     p.getForks(), p.isDemoVerified() ? p.getDemoUrl() : null, p.getDocumentationUrl(), shots,
                     p.getSourceCreatedAt(), p.getLastVerifiedAt(), p.getPublishedAt(), similar(p.getId(), 4),

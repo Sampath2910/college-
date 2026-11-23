@@ -8,10 +8,10 @@ export function Popularity({ card }: { card: Card }) {
   if (card.stars == null) return null;
   const github = card.platformCode === "GITHUB";
   return (
-    <span className="inline-flex items-center gap-1" title={github ? "Stars on GitHub" : "Votes on Kaggle"}>
+    <span className="inline-flex items-center gap-1" title={github ? "Stars" : "Votes"}>
       {github ? <Star className="size-3.5" aria-hidden /> : <ThumbsUp className="size-3.5" aria-hidden />}
       {fmtNumber(card.stars)}
-      <span className="sr-only">{github ? "GitHub stars" : "Kaggle votes"}</span>
+      <span className="sr-only">{github ? "stars" : "votes"}</span>
     </span>
   );
 }
@@ -20,8 +20,6 @@ export function ProjectCard({ card, reason }: { card: Card; reason?: string }) {
   return (
     <article className="group relative flex h-full min-w-0 flex-col rounded-lg border bg-card p-5 transition-[border-color,box-shadow] duration-200 hover:border-foreground/40 hover:shadow-[0_2px_0_var(--border)]">
       <p className="ref flex flex-wrap items-center gap-x-2 gap-y-0.5">
-        <span>{card.platform}</span>
-        <span aria-hidden className="text-border">/</span>
         <span>{PROJECT_TYPES[card.projectType] ?? card.projectType}</span>
       </p>
       <h3 className="mt-3 text-xl leading-snug [overflow-wrap:anywhere]">

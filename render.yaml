@@ -1,0 +1,72 @@
+# Render Blueprint — backend (Spring Boot) + AI service (FastAPI).
+# Frontend goes to Vercel; MySQL is an external managed DB (e.g. Aiven) — Render's
+# own free database is Postgres, which this app does not use.
+# After the first deploy, fill every `sync: false` value in the Render dashboard.
+
+envVarGroups:
+  - name: projectshelf-shared
+    envVars:
+      # Shared secret the backend sends to the AI service (X-Service-Token). Generated once, shared by both.
+      - key: AI_SERVICE_TOKEN
+        generateValue: true
+
+services:
+  # ---- Internal AI service (FastAPI) ----
+  - type: web
+    name: projectshelf-ai
+    runtime: docker
+    plan: free
+    rootDir: ai-service
+    dockerfilePath: ./Dockerfile
+    # Render assigns $PORT; the Dockerfile's CMD hardcodes 8000, so override it to bind $PORT.
+    dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - fromGroup: projectshelf-shared
+      - key: AI_PROVIDER
+        value: anthropic
+      - key: AI_MODEL
+        value: claude-haiku-5-5
+      - key: ANTHROPIC_API_KEY   # optional; without it the service runs in heuristic fallback
+        sync: false
+
+  # ---- Backend (Spring Boot) ----
+  - type: web
+    name: projectshelf-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - fromGroup: projectshelf-shared
+      # Override the Dockerfile's -Xmx512m, which would OOM a 512 MB free instance.
+      # MaxRAMPercentage leaves headroom for metaspace/threads/non-heap.
+      - key: JAVA_OPTS
+        value: -XX:MaxRAMPercentage=65.0 -XX:+UseG1GC
+      - key: COOKIE_SECURE      # served over HTTPS on Render
+        value: "true"
+      # --- external MySQL (Aiven): paste the JDBC URL with SSL, e.g.
+      #     jdbc:mysql://HOST:PORT/projectshelf?useSSL=true&requireSSL=true&connectionTimeZone=UTC
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      # --- first-boot admin login ---
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # --- the AI service's public URL, e.g. https://projectshelf-ai.onrender.com ---
+      - key: AI_SERVICE_URL
+        sync: false
+      # --- your Vercel site URL, e.g. https://yourapp.vercel.app ---
+      - key: APP_PUBLIC_URL
+        sync: false
+      - key: APP_CORS_ORIGINS
+        sync: false
+      # --- optional: raises GitHub discovery from 60 to 5000 req/hr ---
+      - key: GITHUB_TOKEN
+        sync: false
